@@ -11,6 +11,7 @@ Usage
 Standalone usage: `node r8read.js <path to robotron.nv>`
 
 Or from code:
+
     var r8 = require('./r8read.js');
     var r8reader = r8.Reader(<path to robotron.nv>);
     r8reader.printHighScores();
@@ -31,14 +32,12 @@ All bytes are with upper nibble 0xF.
 * etc...
 
 each score (after first one) takes 14 bytes, by offset:
+
 * 0-5: name (initials = 3 ascii chars)
 * 6:   padding (unclear purpose for this digit?)
 * 7-D: score
 
 ### Stats
-
-3 0 0 3 8 4 17 3
-4 0 0 4 12 6 24 4
 
 6 bytes each - raw base 10 digits.
 
