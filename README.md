@@ -1,10 +1,17 @@
-Robotron High Scores
-====================
+Robotron Nvram Reader
+=====================
 
-Scores and stats and other runtime data is stored in Robotron's 1K ram file, which is dumped by MAME on exit to the <MAMEPATH>/nvram/robotron.nv file.
+Scores and stats and other runtime data is stored in Robotron's 1K ram file, which is dumped by MAME on exit to the <MAMEPATH>/nvram/robotron.nv file. This programs reads the data and returns it in an object.
 
-Scores
-------
+Usage
+-----
+
+
+
+Details / Notes
+---------------
+
+### Scores
 
 All bytes are with upper nibble 0xF.
 
@@ -20,8 +27,7 @@ each score (after first one) takes 14 bytes, by offset:
 * 6:   padding (unclear purpose for this digit?)
 * 7-D: score
 
-Stats
------
+### Stats
 
 3 0 0 3 8 4 17 3
 4 0 0 4 12 6 24 4

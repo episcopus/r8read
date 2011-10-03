@@ -1,11 +1,6 @@
 var fs = require('fs');
-var nvramPath, buffer;
 
-if (process.argv.length != 3) {
-    console.log("Robotron nvram high score extractor\n");
-    console.log("Usage: node robotron.js <path to robotron.nv>");
-    process.exit();
-}
+var r8read = module.exports;
 
 // Initials are stored in byte sequences with upper nibble set to 0xF.
 // Consecutive bytes need to be sliced in half (to discard upper nibble) and 
@@ -18,7 +13,6 @@ var extractAsciiFromNvram = function(inBuf, offset, len) {
         var hiOrder = buffer[offset++] & 0xF;
         var loOrder = buffer[offset++] & 0xF;
         var comp = loOrder | (hiOrder << 4);
-        // console.log("index: " + offset - 2 + " hi: " + hiOrder + " lo: " + loOrder + " comp: " + comp);
 
         buf[j] = (comp == 0x3A ? 0x20 : comp);
     }
@@ -36,20 +30,11 @@ var extractIntFromNvram = function(buffer, offset, len) {
         var num = buffer[offset++] & 0xF;
         ret *= 10;
         ret += num;
-        // console.log("i: " + i + " num: " + num + " ret: " + ret);
     }
 
     return ret;
 };
 
-nvramPath = process.argv[2];
-try {
-    buffer = fs.readFileSync(nvramPath);
-}
-catch (e) {
-    console.error("Invalid file name: " + nvramPath);
-    process.exit(1);
-}
 
 for (var i=0, startOff=0x132; i<37; i++) {
     var name = extractAsciiFromNvram(buffer, startOff, 3);
@@ -71,4 +56,27 @@ for (var i=0, startOff=0x132; i<37; i++) {
     else {
         console.log((i + 1) + ") " + name + " : " + score + ". P=" + padding);
     }
+}
+
+// Standalone execution code follows.
+
+var nvramPath, buffer;
+
+if (!module.parent) {
+    if (process.argv.length != 3) {
+        console.log("r8read - robotron 2084 nvram reader\n");
+        console.log("Usage: node r8read.js <path to robotron.nv>");
+        process.exit();
+    }
+
+    nvramPath = process.argv[2];
+    try {
+        buffer = fs.readFileSync(nvramPath);
+    }
+    catch (e) {
+        console.error("Invalid file name: " + nvramPath);
+        process.exit(1);
+    }
+
+    
 }
