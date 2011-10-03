@@ -3,10 +3,18 @@ Robotron Nvram Reader
 
 Scores and stats and other runtime data is stored in Robotron's 1K ram file, which is dumped by MAME on exit to the <MAMEPATH>/nvram/robotron.nv file. This programs reads the data and returns it in an object.
 
+Requires [node.js](http://nodejs.org).
+
 Usage
 -----
 
+Standalone usage: `node r8read.js <path to robotron.nv>`
 
+Or from code:
+    var r8 = require('./r8read.js');
+    var r8reader = r8.Reader(<path to robotron.nv>);
+    r8reader.printHighScores();
+    r8reader.printStats();
 
 Details / Notes
 ---------------

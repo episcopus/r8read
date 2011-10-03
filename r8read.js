@@ -1,5 +1,15 @@
 var fs = require('fs');
 
+// r8read module
+//
+// standalone usage: node r8read.js <path to robotron.nv>
+//
+// or from code:
+//   var r8read = require('./r8read.js');
+//   var r = r8read.Reader(<path to robotron.nv>);
+//   r.printHighScores();
+//   r.printStats();
+
 var r8 = module.exports;
 r8.Reader = (function() {
     // Initials are stored in byte sequences with upper nibble set to 0xF.
