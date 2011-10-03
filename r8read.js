@@ -35,6 +35,19 @@ r8.Reader = (function() {
         return ret;
     };
 
+    // Offsets of all stats stored in nvram. Each has a 6 byte length, and is stored 
+    // the same was as regular high scores.
+    var statsTable = {
+        'left slot coins'      : 0x102,
+        'middle slot coins'    : 0x108,
+        'right slot coins'     : 0x10E,
+        'total coins'          : 0x114,
+        'extra men earned'     : 0x11A,
+        'play time in minutes' : 0x120,
+        'men played'           : 0x126,
+        'credits played'       : 0x12C
+    };
+
     var Reader = function(nvPath) {
         if (!(this instanceof Reader)) {
             return new Reader(nvPath);
@@ -60,18 +73,27 @@ r8.Reader = (function() {
                 longname = extractAsciiFromNvram(this.buffer, startOff, 20);
                 startOff += 40;
             }
-            // Padding's meaning is unknown.
+            // Padding's purpose is unclear.
             var padding = this.buffer[startOff++] & 0xF;
             var score = extractIntFromNvram(this.buffer, startOff, 7);
             startOff += 7;
             if (i == 0) {
-                console.log((i + 1) + ") " + name + " (" + longname  +  ") : " + score + ". P=" + padding);
+                console.log((i + 1) + ") " + name + " (" + longname  +  ") : " + score);
             }
             else {
-                console.log((i + 1) + ") " + name + " : " + score + ". P=" + padding);
+                console.log((i + 1) + ") " + name + " : " + score);
             }
         }
-    }
+    };
+
+    Reader.prototype.printStats = function() {
+        for (var name in statsTable) {
+            if (statsTable.hasOwnProperty(name)) {
+                var val = extractIntFromNvram(this.buffer, statsTable[name], 6);
+                console.log(name + ": " + val);
+            }
+        }
+    };
 
     return Reader;
 }());
@@ -89,4 +111,5 @@ if (!module.parent) {
 
     var r8reader = new r8.Reader(nvramPath);
     r8reader.printHighScores();
+    r8reader.printStats();
 }
