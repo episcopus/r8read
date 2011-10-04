@@ -72,35 +72,59 @@ r8.Reader = (function() {
         }
     };
 
-    Reader.prototype.printHighScores = function() {
+    Reader.prototype.getHighScores = function() {
+        var retScores = [];
         for (var i=0, startOff=0x132; i<37; i++) {
-            var name = extractAsciiFromNvram(this.buffer, startOff, 3);
+            var score = {};
+            score.name = extractAsciiFromNvram(this.buffer, startOff, 3);
             startOff += 6;
-            var longname;
-            // The high score has the opportunity to store an up to 20 character (robotron settings configurable)
+            // The top score has the opportunity to store an up to 20 character (robotron settings configurable)
             // string/long name with his usual initials.  It is stored after the first score's initials.
             if (i == 0) {
-                longname = extractAsciiFromNvram(this.buffer, startOff, 20);
+                score.longname = extractAsciiFromNvram(this.buffer, startOff, 20);
                 startOff += 40;
             }
-            // Padding's purpose is unclear.
-            var padding = this.buffer[startOff++] & 0xF;
-            var score = extractIntFromNvram(this.buffer, startOff, 7);
+            // This padding byte's purpose is unclear.
+            score.padding = this.buffer[startOff++] & 0xF;
+            score.score = extractIntFromNvram(this.buffer, startOff, 7);
             startOff += 7;
+            retScores.push(score);
+        }
+
+        return retScores;
+    };
+
+    Reader.prototype.getStats = function() {
+        var retStats = {};
+        for (var name in statsTable) {
+            if (statsTable.hasOwnProperty(name)) {
+                var val = extractIntFromNvram(this.buffer, statsTable[name], 6);
+                retStats[name] = val;
+            }
+        }
+
+        return retStats;
+    };
+
+    Reader.prototype.printHighScores = function() {
+        var scores = this.getHighScores();
+        for (var i=0, len=scores.length; i<len; i++) {
+            var score = scores[i];
+
             if (i == 0) {
-                console.log((i + 1) + ") " + name + " (" + longname  +  ") : " + score);
+                console.log((i + 1) + ") " + score.name + " (" + score.longname  +  ") : " + score.score);
             }
             else {
-                console.log((i + 1) + ") " + name + " : " + score);
+                console.log((i + 1) + ") " + score.name + " : " + score.score);
             }
         }
     };
 
     Reader.prototype.printStats = function() {
-        for (var name in statsTable) {
-            if (statsTable.hasOwnProperty(name)) {
-                var val = extractIntFromNvram(this.buffer, statsTable[name], 6);
-                console.log(name + ": " + val);
+        var stats = this.getStats();
+        for (name in stats) {
+            if (stats.hasOwnProperty(name)) {
+                console.log(name + ": " + stats[name]);
             }
         }
     };
