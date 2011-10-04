@@ -24,14 +24,14 @@ Details / Notes
 
 All bytes are with upper nibble 0xF.
 
-* 0x132 = AAA (half of ascii code in lower 4 bits of each byte) (6 bytes) - name of top score
-* 0x138 = AAA (6 bytes) - long name of top score (20 chars x 2 bytes = 40 bytes)
-* 0x161 = 0093800 (7 bytes) - numeric portion of top score
-* 0x168 = 0064950 (2nd score)
-* 0x176 = 0063075 (3rd score)
+* 0x132 = half of ascii code in lower 4 bits of each byte (6 bytes) - name of top score
+* 0x138 = 6 bytes - long name of top score (20 chars x 2 bytes = 40 bytes)
+* 0x161 = 7 bytes - numeric portion of top score
+* 0x168 = 2nd score
+* 0x176 = 3rd score
 * etc...
 
-each score (after first one) takes 14 bytes, by offset:
+each score (after first one) takes 14 bytes, by relative offset:
 
 * 0-5: name (initials = 3 ascii chars)
 * 6:   padding (unclear purpose for this digit?)
